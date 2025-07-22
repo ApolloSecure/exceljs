@@ -51,7 +51,11 @@ const expectations = [
     create() {
       return new CellXform();
     },
-    preparedModel: {address: 'A1', type: Enums.ValueType.Boolean, value: true},
+    preparedModel: {
+      address: 'A1',
+      type: Enums.ValueType.Boolean,
+      value: true,
+    },
     parsedModel: {address: 'A1', type: Enums.ValueType.Boolean, value: true},
     xml: '<c r="A1" t="b"><v>1</v></c>',
     tests: ['render', 'renderIn', 'parse'],
@@ -80,7 +84,11 @@ const expectations = [
       return new CellXform();
     },
     initialModel: {address: 'A1', type: Enums.ValueType.String, value: 'Foo'},
-    preparedModel: {address: 'A1', type: Enums.ValueType.String, value: 'Foo'},
+    preparedModel: {
+      address: 'A1',
+      type: Enums.ValueType.String,
+      value: 'Foo',
+    },
     xml: '<c r="A1" t="str"><v>Foo</v></c>',
     parsedModel: {address: 'A1', type: Enums.ValueType.String, value: 'Foo'},
     reconciledModel: {
@@ -89,7 +97,11 @@ const expectations = [
       value: 'Foo',
     },
     tests: ['prepare', 'render', 'renderIn', 'parse', 'reconcile'],
-    options: {hyperlinkMap: fakeHyperlinkMap, styles: fakeStyles},
+    options: {
+      hyperlinkMap: fakeHyperlinkMap,
+      styles: fakeStyles,
+      hyperlinks: [],
+    },
   },
   {
     title: 'String with Invalid Number',
@@ -107,7 +119,11 @@ const expectations = [
       value: '6E1000',
     },
     xml: '<c r="A1" t="str"><v>6E1000</v></c>',
-    parsedModel: {address: 'A1', type: Enums.ValueType.String, value: '6E1000'},
+    parsedModel: {
+      address: 'A1',
+      type: Enums.ValueType.String,
+      value: '6E1000',
+    },
     reconciledModel: {
       address: 'A1',
       type: Enums.ValueType.String,
@@ -205,6 +221,7 @@ const expectations = [
     tests: ['prepare', 'render', 'renderIn', 'parse', 'reconcile'],
     options: {
       sharedStrings: new SharedStringsXform(),
+      hyperlinks: [],
       hyperlinkMap: fakeHyperlinkMap,
       styles: fakeStyles,
     },
@@ -235,7 +252,7 @@ const expectations = [
       },
       ssId: 0,
     },
-    xml: '<c r="A1" t="s"><v>0</v></c>',
+    xml: '<c r="A1" s="1" t="s"><v>0</v></c>',
     parsedModel: {
       address: 'A1',
       type: Enums.ValueType.String,
@@ -254,6 +271,7 @@ const expectations = [
     tests: ['prepare', 'render', 'renderIn', 'parse', 'reconcile'],
     options: {
       sharedStrings: new SharedStringsXform(),
+      hyperlinks: [],
       hyperlinkMap: fakeHyperlinkMap,
       styles: fakeStyles,
     },
@@ -518,6 +536,81 @@ const expectations = [
       hyperlinkMap: fakeHyperlinkMap,
       formulae: {},
       siFormulae: 0,
+    },
+  },
+  {
+    title: 'Inline String with RichText and Hyperlinks',
+    create() {
+      return new CellXform();
+    },
+    initialModel: {
+      address: 'A1',
+      type: Enums.ValueType.String,
+      value: {
+        richText: [
+          {font: {color: {argb: 'FF0000'}}, text: 'Visit our '},
+          {
+            font: {color: {argb: '00FF00'}, underline: true},
+            text: 'website',
+            hyperlink: 'https://example.com',
+          },
+          {font: {color: {argb: 'FF0000'}}, text: ' for more info'},
+        ],
+      },
+    },
+    preparedModel: {
+      address: 'A1',
+      type: Enums.ValueType.String,
+      value: {
+        richText: [
+          {font: {color: {argb: 'FF0000'}}, text: 'Visit our '},
+          {
+            font: {color: {argb: '00FF00'}, underline: true},
+            text: 'website',
+            hyperlink: 'https://example.com',
+          },
+          {font: {color: {argb: 'FF0000'}}, text: ' for more info'},
+        ],
+      },
+      ssId: 0,
+    },
+    xml: '<c r="A1" t="inlineStr"><is><r><rPr><color rgb="FF0000"/></rPr><t>Visit our </t></r><r><rPr><color rgb="00FF00"/><u/></rPr><t>website</t></r><r><rPr><color rgb="FF0000"/></rPr><t> for more info</t></r></is></c>',
+    parsedModel: {
+      address: 'A1',
+      type: Enums.ValueType.String,
+      value: {
+        richText: [
+          {font: {color: {argb: 'FF0000'}}, text: 'Visit our '},
+          {
+            font: {color: {argb: '00FF00'}, underline: true},
+            text: 'website',
+            hyperlink: 'https://example.com',
+          },
+          {font: {color: {argb: 'FF0000'}}, text: ' for more info'},
+        ],
+      },
+    },
+    reconciledModel: {
+      address: 'A1',
+      type: Enums.ValueType.RichText,
+      value: {
+        richText: [
+          {font: {color: {argb: 'FF0000'}}, text: 'Visit our '},
+          {
+            font: {color: {argb: '00FF00'}, underline: true},
+            text: 'website',
+            hyperlink: 'https://example.com',
+          },
+          {font: {color: {argb: 'FF0000'}}, text: ' for more info'},
+        ],
+      },
+    },
+    tests: ['prepare', 'render', 'renderIn', 'parse', 'reconcile'],
+    options: {
+      sharedStrings: new SharedStringsXform(),
+      hyperlinks: [],
+      hyperlinkMap: fakeHyperlinkMap,
+      styles: fakeStyles,
     },
   },
 ];
